@@ -7,6 +7,8 @@ import StudentReportLost from "./pages/StudentReportLost";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminClaims from "./pages/AdminClaims";
+import AdminItems from "./pages/AdminItems";
+
 
 function getUser() {
   const raw = localStorage.getItem("user");
@@ -60,6 +62,16 @@ export default function App() {
             </Protected>
           }
         />
+
+        <Route
+          path="/admin/items"
+          element={
+            <Protected role="ADMIN">
+              <AdminItems />
+            </Protected>
+          }
+        />
+
 
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
