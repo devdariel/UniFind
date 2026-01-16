@@ -1,18 +1,69 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import AppShell from "./components/AppShell";
+
+import StudentFound from "./pages/StudentFound";
+import StudentReportLost from "./pages/StudentReportLost";
+
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminClaims from "./pages/AdminClaims";
+
+function getUser() {
+  const raw = localStorage.getItem("user");
+  return raw ? JSON.parse(raw) : null;
+}
+
+function Protected({ children, role }) {
+  const token = localStorage.getItem("token");
+  const user = getUser();
+  if (!token || !user) return <Navigate to="/login" replace />;
+  if (role && user.role !== role) return <Navigate to="/login" replace />;
+  return <AppShell user={user}>{children}</AppShell>;
+}
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-xl">
-        <h1 className="text-3xl font-semibold tracking-tight">UniFind</h1>
-        <p className="mt-2 text-slate-300">Modern UI foundation ✅</p>
-        <div className="mt-6 flex gap-3">
-          <button className="rounded-xl bg-slate-100 px-4 py-2 text-slate-900 font-medium hover:opacity-90">
-            Primary
-          </button>
-          <button className="rounded-xl border border-slate-700 px-4 py-2 text-slate-100 hover:bg-slate-900">
-            Secondary
-          </button>
-        </div>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/student/found"
+          element={
+            <Protected role="STUDENT">
+              <StudentFound />
+            </Protected>
+          }
+        />
+        <Route
+          path="/student/report-lost"
+          element={
+            <Protected role="STUDENT">
+              <StudentReportLost />
+            </Protected>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <Protected role="ADMIN">
+              <AdminDashboard />
+            </Protected>
+          }
+        />
+        <Route
+          path="/admin/claims"
+          element={
+            <Protected role="ADMIN">
+              <AdminClaims />
+            </Protected>
+          }
+        />
+
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
