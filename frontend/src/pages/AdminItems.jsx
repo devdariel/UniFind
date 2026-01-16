@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api/client";
+import { useSearchParams } from "react-router-dom";
 import { Search, Filter, RefreshCw, X, Loader2, History } from "lucide-react";
 
 const FILTERS = [
@@ -9,6 +10,8 @@ const FILTERS = [
 ];
 
 export default function AdminItems() {
+  const [params] = useSearchParams();
+
   const [tab, setTab] = useState("ALL");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,6 +71,16 @@ export default function AdminItems() {
     }
   }
 
+  // ✅ Auto-open drawer when coming from dashboard: /admin/items?open=ID
+  useEffect(() => {
+    const id = Number(params.get("open"));
+    if (!id || items.length === 0) return;
+
+    const item = items.find((x) => x.id === id);
+    if (item) openDrawer(item);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -76,7 +89,7 @@ export default function AdminItems() {
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Items</h1>
             <p className="mt-1 text-sm text-slate-300">
-              Manage all items and view audit history (status changes). This is key evidence for your technical report.
+              Manage all items and view audit history (status changes).
             </p>
           </div>
 
@@ -273,7 +286,7 @@ export default function AdminItems() {
               </div>
 
               <div className="mt-4 text-xs text-slate-500">
-                This history is your “audit trail” proof for the technical report.
+                This history is your audit trail proof for the technical report.
               </div>
             </div>
           </div>
@@ -318,4 +331,3 @@ function formatDateTime(v) {
     return String(v);
   }
 }
-

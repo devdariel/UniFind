@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api/client";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   RefreshCw,
@@ -14,6 +15,8 @@ import {
 const CATEGORIES = ["ID_CARD", "KEYS", "LAPTOP", "HEADPHONES", "BOOK", "BAG", "PHONE", "OTHER"];
 
 export default function AdminDashboard() {
+  const nav = useNavigate();
+
   const [items, setItems] = useState([]);
   const [pendingClaimsCount, setPendingClaimsCount] = useState(0);
 
@@ -34,12 +37,10 @@ export default function AdminDashboard() {
     setErr("");
     setMsg("");
     try {
-      // Admin list of items
       const resItems = await api.get("/admin/items");
       const list = resItems.data.items || [];
       setItems(list);
 
-      // Pending claims count
       const resClaims = await api.get("/claims", { params: { status: "PENDING" } });
       setPendingClaimsCount(resClaims.data.count || 0);
     } catch (e) {
@@ -64,7 +65,6 @@ export default function AdminDashboard() {
   }, [items]);
 
   const latest = useMemo(() => {
-    // Most lists include created_at; if not, fall back to id sorting.
     const sorted = [...items].sort((a, b) => (b.id || 0) - (a.id || 0));
     return sorted.slice(0, 5);
   }, [items]);
@@ -74,7 +74,6 @@ export default function AdminDashboard() {
     setErr("");
     setMsg("");
 
-    // simple validation
     if (title.trim().length < 3) return setErr("Please enter a clear title (min 3 chars).");
     if (description.trim().length < 10) return setErr("Please add more description (min 10 chars).");
     if (location.trim().length < 3) return setErr("Please enter a location (min 3 chars).");
@@ -93,7 +92,6 @@ export default function AdminDashboard() {
       const res = await api.post("/items/found", payload);
       setMsg(`✅ Found item registered successfully (Item ID: ${res.data?.id}).`);
 
-      // Clear form
       setTitle("");
       setDescription("");
       setCategory("OTHER");
@@ -120,11 +118,28 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-950/40 px-3 py-2 text-sm text-slate-200">
               <LayoutDashboard className="h-4 w-4" />
               Staff Panel
             </span>
+
+            <button
+              onClick={() => nav("/admin/claims")}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-950/40 px-3 py-2 text-sm hover:bg-slate-900"
+            >
+              <ClipboardList className="h-4 w-4" />
+              Claims
+            </button>
+
+            <button
+              onClick={() => nav("/admin/items")}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-950/40 px-3 py-2 text-sm hover:bg-slate-900"
+            >
+              <Boxes className="h-4 w-4" />
+              Items
+            </button>
+
             <button
               onClick={load}
               className="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-950/40 px-3 py-2 text-sm hover:bg-slate-900"
@@ -163,7 +178,11 @@ export default function AdminDashboard() {
         <MetricCard label="Lost" value={loading ? "…" : metrics.lost} />
         <MetricCard label="Found" value={loading ? "…" : metrics.found} />
         <MetricCard label="Claimed" value={loading ? "…" : metrics.claimed} />
-        <MetricCard icon={<ClipboardList className="h-4 w-4" />} label="Pending claims" value={loading ? "…" : pendingClaimsCount} />
+        <MetricCard
+          icon={<ClipboardList className="h-4 w-4" />}
+          label="Pending claims"
+          value={loading ? "…" : pendingClaimsCount}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -250,12 +269,12 @@ export default function AdminDashboard() {
           </form>
         </div>
 
-        {/* Latest activity */}
+        {/* Latest items (CLICKABLE) */}
         <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
           <div className="text-sm text-slate-400">Recent</div>
           <h2 className="text-xl font-semibold">Latest Items</h2>
           <p className="mt-1 text-sm text-slate-300">
-            Quick view of the most recent items in the system.
+            Click any item to open details + history.
           </p>
 
           <div className="mt-5 space-y-3">
@@ -271,7 +290,11 @@ export default function AdminDashboard() {
               </div>
             ) : (
               latest.map((it) => (
-                <div key={it.id} className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                <button
+                  key={it.id}
+                  onClick={() => nav(`/admin/items?open=${it.id}`)}
+                  className="w-full text-left rounded-xl border border-slate-800 bg-slate-950/40 p-4 hover:bg-slate-900/50 transition"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="text-xs text-slate-400">
@@ -282,13 +305,13 @@ export default function AdminDashboard() {
                     </div>
                     <StatusBadge status={it.status} />
                   </div>
-                </div>
+                </button>
               ))
             )}
           </div>
 
           <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-sm text-slate-300">
-            Tip: Use the <b>Claims Review</b> page to approve/reject claims and see statuses update automatically.
+            Tip: Use <b>Claims Review</b> to approve/reject claims and see statuses update automatically.
           </div>
         </div>
       </div>
