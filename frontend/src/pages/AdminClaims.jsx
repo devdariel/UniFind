@@ -218,9 +218,19 @@ export default function AdminClaims() {
 
                     <td className="px-6 py-4">
                       <div className="font-medium text-slate-100">{c.item_title}</div>
-                      <div className="text-xs text-slate-400">
-                        {c.item_category?.replaceAll("_", " ")} • {c.item_location}
+
+                      <div className="text-sm font-semibold text-slate-100">
+                        {c.title}
                       </div>
+
+                      <div className="mt-1 text-xs text-slate-400">
+                        <span className="text-slate-300">Category:</span>{" "}
+                        {(c.category || "OTHER").replaceAll("_", " ")}
+                        <span className="mx-2 text-slate-600">|</span>
+                        <span className="text-slate-300">Location:</span>{" "}
+                        {c.location || "-"}
+                      </div> 
+
                       <button
                         onClick={() => openModal(c, "view")}
                         className="mt-2 text-xs text-slate-200 underline decoration-slate-700 underline-offset-4 hover:text-white"
