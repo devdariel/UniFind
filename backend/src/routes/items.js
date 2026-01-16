@@ -145,4 +145,43 @@ router.patch("/:id/status", requireAuth, requireRole("ADMIN"), async (req, res) 
   res.json({ id: itemId, oldStatus, newStatus });
 });
 
+/**
+ * Get item status history (audit log)
+ * GET /items/:id/history
+ */
+router.get("/:id/history", async (req, res) => {
+  const itemId = Number(req.params.id);
+  if (!itemId) return res.status(400).json({ error: "Invalid item id" });
+
+  const [rows] = await pool.execute(
+    `SELECT id, item_id, old_status, new_status, changed_by_user_id, change_reason, changed_at
+     FROM item_status_history
+     WHERE item_id = ?
+     ORDER BY changed_at DESC`,
+    [itemId]
+  );
+
+  res.json({ itemId, count: rows.length, history: rows });
+});
+
+/**
+ * Get item details by id
+ * GET /items/:id
+ */
+router.get("/:id", async (req, res) => {
+  const itemId = Number(req.params.id);
+  if (!itemId) return res.status(400).json({ error: "Invalid item id" });
+
+  const [rows] = await pool.execute(
+    `SELECT id, title, description, category, status, location, event_date, created_at, updated_at
+     FROM items
+     WHERE id = ?
+     LIMIT 1`,
+    [itemId]
+  );
+
+  if (!rows.length) return res.status(404).json({ error: "Item not found" });
+  res.json(rows[0]);
+});
+
 module.exports = router;

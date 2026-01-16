@@ -5,7 +5,7 @@ const { pool } = require("./db");
 const authRoutes = require("./routes/auth");
 const itemsRoutes = require("./routes/items");
 const claimsRoutes = require("./routes/claims");
-
+const adminRoutes = require("./routes/admin");
 
 
 const app = express();
@@ -27,6 +27,8 @@ app.get("/health/db", async (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/items", itemsRoutes);
 app.use("/claims", claimsRoutes);
+app.use("/admin", adminRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ UniFind API running on http://localhost:${PORT}`));
 
