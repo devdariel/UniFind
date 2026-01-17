@@ -8,7 +8,7 @@ The system is developed following **software engineering best practices**, inclu
 
 ---
 
-## 🎯 Project Objectives
+## Project Objectives
 - Digitize the university lost & found process
 - Reduce time and manual effort in item recovery
 - Ensure secure role-based access for students and administrators
@@ -17,7 +17,7 @@ The system is developed following **software engineering best practices**, inclu
 
 ---
 
-## 👥 User Roles
+## User Roles
 
 ### Student
 - Secure authentication
@@ -35,7 +35,7 @@ The system is developed following **software engineering best practices**, inclu
 
 ---
 
-## 🧱 System Architecture
+## System Architecture
 
 ### Frontend
 - React (Vite)
@@ -56,7 +56,7 @@ The system is developed following **software engineering best practices**, inclu
 
 ---
 
-## 🔐 Core Features
+## Core Features
 - JWT authentication
 - Role-based authorization (Student / Admin)
 - Lost and found item lifecycle management
@@ -67,7 +67,7 @@ The system is developed following **software engineering best practices**, inclu
 
 ---
 
-## 🗄️ Database Overview
+## Database Overview
 
 Main tables:
 - `users`
@@ -79,7 +79,7 @@ Each critical system action is logged to ensure traceability and accountability.
 
 ---
 
-## 🚀 How to Run the Project
+## How to Run the Project
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -112,7 +112,7 @@ http://localhost:5173
 
 ---
 
-## 🧪 End-to-End Testing
+## End-to-End Testing
 The system has been fully tested, including:
 - Student and admin authentication
 - Lost item reporting
@@ -124,7 +124,7 @@ The system has been fully tested, including:
 
 ---
 
-## 📸 Documentation & Screenshots
+## Documentation & Screenshots
 Screenshots demonstrating:
 - Login interface
 - Student dashboard
@@ -137,7 +137,7 @@ are included in the **project presentation** and **technical report**.
 
 ---
 
-## 📄 Academic Context
+## Academic Context
 This project was developed as part of a **Software Engineering course** and follows the full software development lifecycle:
 - Requirements analysis
 - System design
@@ -149,12 +149,12 @@ All deliverables align with the submitted **project proposal**, **presentation t
 
 ---
 
-## 👨‍💻 Authors
+## Authors
 - **Dariel Shabani**
 - **Vexhi Skeja**
 
 ---
 
-## ✅ Project Status
+## Project Status
 **Completed**  
 All backend and frontend features are fully implemented and integrated.
